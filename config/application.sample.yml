@@ -1,0 +1,21 @@
+remote_db:
+  adapter: postgres
+  host: host
+  port: 5432
+  database: docker
+  username: docker
+  password: pass
+  dump_schema_options: "-O --schema-only"
+  dump_data_options: ""
+
+ssh_user:
+  name: docker
+  host: docker.beta.com
+  ssh_keys: ['/.ssh/id_rsa.pub']
+  passphrase: pass
+
+remote_machine:
+  dest_path: /tmp
+
+local_machine:
+  dest_path: /tmp
