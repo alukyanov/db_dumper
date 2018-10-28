@@ -7,22 +7,22 @@ module DbDumper
 
       delegate :table_name, to: :table
 
-      def initialize(table)
-        @table  = table
-        @ar     = @table.ar.all
+      def initialize(raw_table, exist_ar = nil)
+        @table  = Table.from(raw_table)
+        @ar     = exist_ar || table.ar.all
       end
 
       def where(*args)
-        tap { @ar = @ar.where(*args) }
+        self.class.new(table, ar.where(*args))
       end
 
       def joins(*args)
         raise 'Only simple string for joins supported' unless args.size == 1 && args[0].is_a?(String)
-        tap { @ar = @ar.joins(*args) }
+        self.class.new(table, ar.joins(*args))
       end
 
       def select(*args)
-        tap { @ar = @ar.select(*args) }
+        self.class.new(table, ar.select(*args))
       end
 
       def to_sql
