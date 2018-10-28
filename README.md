@@ -11,6 +11,8 @@
   - [Bundler](#or-if-you-are-using-bundler)
 
 ## Usage
+- Setup config/application.yml file properly.
+- Install pg_dump, psql utils on remote machine for PostgreSQL adapter.
 
 Example for simple Ruby file:
 
@@ -39,6 +41,10 @@ After executing you will see:
  
 
 ### Config
+
+#### remote_db
+##### adapter
+Currently supported only postgres adapter, so you can dump only PostgreSQL.
 
 Config file example at config/application.yml
 
