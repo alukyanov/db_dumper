@@ -6,7 +6,7 @@ class QueryTest < ActiveSupport::TestCase
   def setup
     ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
     @query = DbDumper::QueryBuilder::Query.new('users')
-    sleep(0.1) # HACK sqlite table sometimes not created :)
+    sleep(0.5) # HACK sqlite table sometimes not created :)
   end
 
   def test_initialize

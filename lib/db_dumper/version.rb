@@ -1,3 +1,3 @@
 module DbDumper
-  VERSION = '0.5.4s'
+  VERSION = '0.5.5'
 end
