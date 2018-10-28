@@ -17,15 +17,14 @@ module DbDumper
 
     # DSL start
 
-    # creates new query and add it to resulting queries array
+    # add query to current dump
     def dump(query)
-      query = q(query) if query.is_a?(String)
-      query.tap { |q| queries << q }
+      queries << query
     end
 
     # creates new query
-    def q(table_name)
-      Query.new Table.from(table_name.to_s)
+    def q(raw_table)
+      Query.new(raw_table)
     end
 
     # DSL end

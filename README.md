@@ -28,10 +28,10 @@ end
 
 DbDumper.dump do
   user_id = 1
-  dump('users').where(id: user_id)
+  dump q('users').where(id: user_id)
   campaigns_q = q('campaigns').where('user_id = ? OR for_all IS TRUE', user_id)
-  dump(campaigns_q)
-  dump('offices').where(campaign_id: campaigns_q.ar)
+  dump campaigns_q
+  dump q('offices').where(campaign_id: campaigns_q.ar)
 end
 ```
 
@@ -69,10 +69,6 @@ remote_machine:
 local_machine:
   dest_path: /tmp
 ```
-
-### Testing
-
-No tests fo now
 
 ## <a id="installation">Installation ##
 

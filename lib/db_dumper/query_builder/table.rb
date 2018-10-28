@@ -7,10 +7,13 @@ module DbDumper
 
       @tables = {}
 
-      def self.from(table_name)
-        @tables[table_name] ||= begin
-          ActiveRecord::Migration.create_table(table_name)
-          new(table_name)
+      def self.from(raw_table)
+        return raw_table if raw_table.is_a?(Table)
+
+        table_name_str = raw_table.to_s
+        @tables[table_name_str] ||= begin
+          ActiveRecord::Migration.create_table(table_name_str)
+          new(table_name_str)
         end
       end
 
