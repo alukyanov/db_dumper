@@ -21,6 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'net-ssh'
   s.add_dependency 'net-scp'
 
-  s.files         = ['lib/**/*']
+  s.files         = Dir['README.md', 'lib/**/*']
   s.require_path  = 'lib'
 end
