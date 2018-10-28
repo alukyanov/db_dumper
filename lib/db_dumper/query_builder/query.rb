@@ -1,5 +1,7 @@
 module DbDumper
   class QueryBuilder
+
+    # Wrapper under ActiveRecord::Relation
     class Query
       attr_reader :table, :ar
 

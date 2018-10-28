@@ -1,4 +1,9 @@
+# How config/schema.rb may look
+
 # DbDumper.dump do
-#   q('users').where(active: true).where(type: [1, 2, 3])
-#   q('campaigns').joins('join users on users.id = campaigns.user_id').where(deleted: false)
+#   user_id = 1
+#   dump('users').where(id: user_id)
+#   campaigns_q = q('campaigns').where('user_id = ? OR for_all IS TRUE', user_id)
+#   dump(campaigns_q)
+#   dump('offices').where(campaign_id: campaigns_q.ar)
 # end

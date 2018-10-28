@@ -1,5 +1,7 @@
 module DbDumper
   class QueryBuilder
+
+    # Storage for generated classes inherited from ActiveRecord::Base
     class Table
       attr_reader :table_name
 

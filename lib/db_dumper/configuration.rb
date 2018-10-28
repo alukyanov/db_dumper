@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require_relative 'configuration/base'
 require_relative 'configuration/postgres'
 
 module DbDumper
+
+  # Configuration class, by default loads from config/application.yml file
+  # see config/application.sample.yml for format details
   class Configuration
     SshUser = Struct.new(:name, :host, :ssh_keys, :passphrase, keyword_init: true)
     RemoteDB = Struct.new(:adapter, :host, :port, :database, :username, :password,
@@ -32,7 +36,7 @@ module DbDumper
     def db_utils
       @db_utils ||= begin
         utils = DB_UTILS[remote_db.adapter]
-        raise 'Unknown adapter for remote_db:adapter: check application.yml' unless utils
+        raise 'Unknown adapter for remote_db:adapter check application.yml' unless utils
         utils.new(remote_db)
       end
     end
@@ -53,11 +57,11 @@ module DbDumper
       @local_machine ||= LocalMachine.new(loaded_file['local_machine'])
     end
 
-    private
-
     def logger
       @logger ||= Logger.new(STDOUT)
     end
+
+    private
 
     def loaded_file
       @loaded_file ||= YAML.load_file(config_file_path)

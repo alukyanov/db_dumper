@@ -1,10 +1,8 @@
 module DbDumper
   class Configuration
-    class Postgres
-      attr_reader :db_config
-
-      def initialize(db_config)
-        @db_config = db_config
+    class Postgres < Base
+      def copy_data_command(sql, file_path)
+        "\\COPY (#{sql}) TO '#{file_path}';"
       end
 
       def dump_schema_command(dump_schema_file_path)
