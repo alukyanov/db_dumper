@@ -1,6 +1,7 @@
 # DB dumper - configurable SQL database data copying util from remote to local machine.
 
 [![Gem Version](https://badge.fury.io/rb/db_dumper.svg)](https://badge.fury.io/rb/db_dumper)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d5676f2dca807bdc458b/maintainability)](https://codeclimate.com/github/alukyanov/db_dumper/maintainability)
 
 ## Index
 - [Usage](#usage)
