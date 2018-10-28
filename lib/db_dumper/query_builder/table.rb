@@ -1,3 +1,6 @@
+require 'sqlite3'
+require 'active_record'
+
 module DbDumper
   class QueryBuilder
 
@@ -11,10 +14,7 @@ module DbDumper
         return raw_table if raw_table.is_a?(Table)
 
         table_name_str = raw_table.to_s
-        @tables[table_name_str] ||= begin
-          ActiveRecord::Migration.create_table(table_name_str)
-          new(table_name_str)
-        end
+        @tables[table_name_str] ||= new(table_name_str)
       end
 
       def ar
@@ -27,6 +27,11 @@ module DbDumper
 
       def initialize(table_name)
         @table_name = table_name
+        create_table
+      end
+
+      def create_table
+        ActiveRecord::Migration.create_table(table_name)
       end
     end
   end

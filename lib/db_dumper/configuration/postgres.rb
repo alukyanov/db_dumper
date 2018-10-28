@@ -19,6 +19,7 @@ module DbDumper
         <<-CMD.squish
           PGPASSWORD=#{db_config.password} #{util}
             -h #{db_config.host}
+            -p #{db_config.port}
             -U #{db_config.username}
             -d #{db_config.database}
           #{command}

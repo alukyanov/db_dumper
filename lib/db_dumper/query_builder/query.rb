@@ -1,11 +1,11 @@
+require_relative 'table'
+
 module DbDumper
   class QueryBuilder
 
     # Wrapper under ActiveRecord::Relation
     class Query
       attr_reader :table, :ar
-
-      delegate :table_name, to: :table
 
       def initialize(raw_table, exist_ar = nil)
         @table  = Table.from(raw_table)
@@ -23,6 +23,10 @@ module DbDumper
 
       def select(*args)
         self.class.new(table, ar.select(*args))
+      end
+
+      def table_name
+        table.table_name
       end
 
       def to_sql
