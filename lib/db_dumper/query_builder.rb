@@ -2,7 +2,6 @@ require_relative 'query_builder/table'
 require_relative 'query_builder/query'
 
 module DbDumper
-
   # Generates queries for copying data
   class QueryBuilder
     attr_reader :config
@@ -31,6 +30,14 @@ module DbDumper
 
     # DSL end
 
+    def self.establish_connection
+      return if ActiveRecord::Base.connected?
+
+      ActiveRecord::Migration.verbose = false
+      ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+    end
+    private_class_method :establish_connection
+
     private
 
     def to_sql
@@ -39,13 +46,6 @@ module DbDumper
 
     def initialize(config)
       @config = config
-    end
-
-    def self.establish_connection
-      return if ActiveRecord::Base.connected?
-
-      ActiveRecord::Migration.verbose = false
-      ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
     end
 
     def queries

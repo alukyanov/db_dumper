@@ -3,18 +3,13 @@ module DbDumper
 
     # Wrapper around Net::SSH, Net:SCP
     class SshAgent
-      attr_reader :credentials, :config
+      attr_reader :config
       attr_reader :block, :ssh
-      attr_reader :ssh_user_name, :ssh_host_name
 
-      def initialize(credentials, config, &block)
-        @credentials  = credentials
+      def initialize(config, &block)
         @config       = config
         @block        = block
         @ssh          = Net::SSH.start(*credentials)
-
-        @ssh_host_name = credentials[0]
-        @ssh_user_name = credentials[1]
       end
 
       def exec!(command)
@@ -34,8 +29,21 @@ module DbDumper
 
       private
 
+      def credentials
+        [
+          ssh_user.host,
+          ssh_user.name,
+          keys:       ssh_user.ssh_keys,
+          passphrase: ssh_user.passphrase
+        ]
+      end
+
+      def ssh_user
+        @ssh_user ||= config.ssh_user
+      end
+
       def ssh_machine_name
-        "#{ssh_user_name}@#{ssh_host_name}"
+        "#{ssh_user.name}@#{ssh_user.host}"
       end
 
       def log(message)
