@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'minitest/autorun'
-require 'db_dumper/query_builder/query'
+require 'test_helper'
 
 class QueryTest < ActiveSupport::TestCase
   def setup
