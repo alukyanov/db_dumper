@@ -6,7 +6,8 @@ remote_db:
   username: docker
   password: pass
   dump_schema_options: "-O --schema-only"
-  dump_data_options: ""
+  dump_data_options: "-O --data-only"
+  dump_copy_options: ""
 
 ssh_user:
   name: docker

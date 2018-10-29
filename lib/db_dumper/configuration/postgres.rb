@@ -9,8 +9,13 @@ module DbDumper
         util_command('pg_dump', "#{db_config.dump_schema_options} -f #{dump_schema_file_path}")
       end
 
+      def dump_table_data_command(dumped_tables, dump_table_data_file_path)
+        joined_tables = "-t #{dumped_tables.join(' -t ')}"
+        util_command('pg_dump', "#{db_config.dump_data_options} #{joined_tables} -f #{dump_table_data_file_path}")
+      end
+
       def dump_data_command(dump_data_file_path)
-        util_command('psql', "#{db_config.dump_data_options} -f #{dump_data_file_path}")
+        util_command('psql', "#{db_config.dump_copy_options} -c \"#{dump_data_file_path}\"")
       end
 
       private

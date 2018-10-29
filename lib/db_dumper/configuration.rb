@@ -6,11 +6,11 @@ require_relative 'configuration/postgres'
 module DbDumper
 
   # Configuration class, by default loads from config/application.yml file
-  # see config/application.sample.yml for format details
+  # see config/dumper.sample.yml for format details
   class Configuration
     SshUser = Struct.new(:name, :host, :ssh_keys, :passphrase, keyword_init: true)
     RemoteDB = Struct.new(:adapter, :host, :port, :database, :username, :password,
-                          :dump_schema_options, :dump_data_options,
+                          :dump_schema_options, :dump_data_options, :dump_copy_options,
                           keyword_init: true)
     RemoteMachine = Struct.new(:dest_path, keyword_init: true) do
       def data_path

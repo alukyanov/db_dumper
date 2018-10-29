@@ -2,20 +2,16 @@ require_relative 'remote_machine/ssh_agent'
 
 module DbDumper
   class RemoteMachine
-    attr_reader :config, :copy_commands_sql
+    attr_reader :config, :dumped_tables, :copy_commands
 
-    def initialize(config, copy_commands_sql)
+    def initialize(config, dumped_tables, copy_commands)
       @config = config
-      @copy_commands_sql = copy_commands_sql
+      @dumped_tables = dumped_tables
+      @copy_commands = copy_commands
     end
 
     def dump
-      config.log('save sql commands to local machine')
-      save_commands_sql_to_tmp_file
-
       with_ssh do |ssh|
-        upload_commands_sql_to_remote_machine(ssh)
-
         dump_schema(ssh)
         dump_data(ssh)
 
@@ -33,23 +29,17 @@ module DbDumper
       yield(ssh_agent)
     end
 
-    def save_commands_sql_to_tmp_file
-      File.open(local_commands_sql_file_path, 'w') do |file|
-        file.write(copy_commands_sql)
-      end
-    end
-
-    def upload_commands_sql_to_remote_machine(ssh)
-      ssh.upload!(local_commands_sql_file_path, remote_commands_sql_file_path)
-    end
-
     def dump_schema(ssh)
       ssh.exec!(db_utils.dump_schema_command(remote_machine_schema_file_path))
     end
 
     def dump_data(ssh)
       ssh.exec!("mkdir -p #{remote_machine_data_path}")
-      ssh.exec!(db_utils.dump_data_command(remote_commands_sql_file_path))
+
+      ssh.exec!(db_utils.dump_table_data_command(dumped_tables, remote_machine_tables_data_file_path))
+      copy_commands.each do |copy_command|
+        ssh.exec!(db_utils.dump_data_command(copy_command))
+      end
     end
 
     def download_schema(ssh)
@@ -58,14 +48,13 @@ module DbDumper
 
     def download_data(ssh)
       ssh.download!(remote_machine_data_path, dest_path, recursive: true)
+      ssh.download!(remote_machine_tables_data_file_path, dest_path)
     end
 
     def clean(ssh)
-      ssh.exec! "rm #{remote_commands_sql_file_path}"
       ssh.exec! "rm #{remote_machine_schema_file_path}"
+      ssh.exec! "rm #{remote_machine_tables_data_file_path}"
       ssh.exec! "rm -rf #{remote_machine_data_path}"
-
-      File.delete(local_commands_sql_file_path)
     end
 
     def db_utils
@@ -76,12 +65,8 @@ module DbDumper
       "#{remote_machine_dest_path}/#{dump_schema_fname}"
     end
 
-    def remote_commands_sql_file_path
-      "#{remote_machine_dest_path}/#{commands_sql_fname}"
-    end
-
-    def local_commands_sql_file_path
-      "#{dest_path}/#{commands_sql_fname}"
+    def remote_machine_tables_data_file_path
+      "#{remote_machine_dest_path}/#{dump_data_fname}"
     end
 
     def remote_machine_data_path
@@ -96,12 +81,12 @@ module DbDumper
       config.local_machine.dest_path
     end
 
-    def commands_sql_fname
-      @commands_sql_fname ||= "#{Digest::MD5.hexdigest(copy_commands_sql)}.sql"
-    end
-
     def dump_schema_fname
       'schema_dump.sql'
+    end
+
+    def dump_data_fname
+      'data_dump.sql'
     end
   end
 end

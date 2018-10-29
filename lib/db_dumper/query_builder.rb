@@ -6,19 +6,31 @@ module DbDumper
   class QueryBuilder
     attr_reader :config
 
-    def self.to_sql(config, &block)
+    def self.build(config, &block)
       establish_connection
 
-      new(config).yield_self do |instance|
+      new(config).tap do |instance|
         instance.instance_eval(&block)
-        instance.send(:to_sql)
       end
+    end
+
+    def dumping_tables
+      @dumping_tables ||= []
+    end
+
+    def copy_commands
+      queries.map(&method(:build_copy_command))
     end
 
     # DSL start
 
+    # Dump whole table to sql file
+    def dump(table_name)
+      dumping_tables << table_name
+    end
+
     # add query to current dump
-    def dump(query)
+    def copy(query)
       queries << query
     end
 
@@ -38,10 +50,6 @@ module DbDumper
     private_class_method :establish_connection
 
     private
-
-    def to_sql
-      queries.map(&method(:build_copy_command)).join("\n")
-    end
 
     def initialize(config)
       @config = config
