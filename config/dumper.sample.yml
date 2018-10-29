@@ -17,6 +17,3 @@ ssh_user:
 
 remote_machine:
   dest_path: /tmp
-
-local_machine:
-  dest_path: /tmp

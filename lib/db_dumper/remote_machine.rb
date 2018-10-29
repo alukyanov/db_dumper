@@ -2,10 +2,11 @@ require_relative 'remote_machine/ssh_agent'
 
 module DbDumper
   class RemoteMachine
-    attr_reader :config, :dumped_tables, :copy_commands
+    attr_reader :config, :dest, :dumped_tables, :copy_commands
 
-    def initialize(config, dumped_tables, copy_commands)
+    def initialize(config, dest, dumped_tables, copy_commands)
       @config = config
+      @dest = dest
       @dumped_tables = dumped_tables
       @copy_commands = copy_commands
     end
@@ -43,12 +44,12 @@ module DbDumper
     end
 
     def download_schema(ssh)
-      ssh.download!(remote_machine_schema_file_path, dest_path)
+      ssh.download!(remote_machine_schema_file_path, dest)
     end
 
     def download_data(ssh)
-      ssh.download!(remote_machine_data_path, dest_path, recursive: true)
-      ssh.download!(remote_machine_tables_data_file_path, dest_path)
+      ssh.download!(remote_machine_data_path, dest, recursive: true)
+      ssh.download!(remote_machine_tables_data_file_path, dest)
     end
 
     def clean(ssh)
@@ -75,10 +76,6 @@ module DbDumper
 
     def remote_machine_dest_path
       config.remote_machine.dest_path
-    end
-
-    def dest_path
-      config.local_machine.dest_path
     end
 
     def dump_schema_fname

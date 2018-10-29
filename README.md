@@ -39,8 +39,9 @@ end
 ```
 
 After executing you will see:
-- schema sql at local_machine/dest_path/schema_dump.sql.
-- csv files at local_machine/dest_path/csv/*.csv
+- schema sql at schema_dump.sql
+- dumped tables sql at data_dump.sql
+- csv files at csv/*.csv
  
 
 ### Config

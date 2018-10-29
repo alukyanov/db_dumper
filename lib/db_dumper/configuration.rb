@@ -17,7 +17,6 @@ module DbDumper
         "#{dest_path}/csv"
       end
     end
-    LocalMachine = Struct.new(:dest_path, keyword_init: true)
 
     DB_UTILS = {
       'postgres' => Postgres
@@ -51,10 +50,6 @@ module DbDumper
 
     def remote_db
       @remote_db ||= RemoteDB.new(loaded_file['remote_db'])
-    end
-
-    def local_machine
-      @local_machine ||= LocalMachine.new(loaded_file['local_machine'])
     end
 
     def logger
